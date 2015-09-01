@@ -167,6 +167,7 @@ for root, dirs, files in os.walk(dir_TRK):
 global file_handles
 file_handles = []
 
+
 def _gen_label_(handle, each_video, label):
     if handle['data_name'] == 'c3d':
         video = each_video.split(':')[0]
@@ -225,8 +226,11 @@ def _gen_source_(inputfile, prefix):
 scores_trk = {}
 scores_lst = []
 
+# _open_file_( any_prefix, framework_name=c3d, caffe )
 handle_c3d_trkrank = _open_file_('trkrank', 'c3d')
 handle_caffe_trkrank = _open_file_('trkrank', 'caffe')
+handle_c3d_difficulty = _open_file_('difficulty', 'c3d')
+handle_caffe_difficulty = _open_file_('difficulty', 'caffe')
 
 
 # Create labels for each video clips
@@ -251,25 +255,41 @@ with open(nameto_lst_LABEL,'r') as f: # start2end.index
             try:
                 scores_lst.append(CLUSTER_DATAS[each_tracker][ptr])
             except:
-                scores_lst.append(-1)
+                scores_lst.append(-1.0)
         # Rank the scores among trakcers and product labels (classification)
         sorted_trk = sorted(scores_trk.items(), key=operator.itemgetter(1), reverse=True)
         for ind, each_trk in enumerate(sorted_trk):
             CLUSTER_LABELS[each_trk[0]][ptr] = ind
+            
 
-        # Classification #1 (by the best tracker name)
+        # Classification #1 "trkrank" (by the best tracker name)
         label_ = lst_TRK.index(sorted_trk[0][0])  
         label = "{:0>1}".format(label_)
-        # Classification #2 (by success rate of all trackers)
+        _gen_label_(handle_c3d_trkrank, each_video, label)
+        _gen_label_(handle_caffe_trkrank, each_video, label)
 
+        # Classification #2 (by success rate of all trackers)
+        for ind, each_score in enumerate(scores_lst):
+            try:
+                [float(i) for i in each_score]
+            except:
+                i = each_score
+            if( i >= 0.99):
+                scores_lst[ind] = 1
+            else:
+                scores_lst[ind] = 0
+        sum_ = np.sum(scores_lst)
+        label_ = "{:0>1}".format(label_)
+        # _close_all_()
+        # sys.exit()
+        _gen_label_(handle_c3d_difficulty, each_video, label)
+        _gen_label_(handle_caffe_difficulty, each_video, label)
         # Classification #3 (by attribute)
 
         # avg_ = np.mean(score_lst)
         # std_ = np.std(score_lst)
         # max_ = np.max(score_lst)
         # min_ = np.min(score_lst)
-        _gen_label_(handle_c3d_trkrank, each_video, label)
-        _gen_label_(handle_caffe_trkrank, each_video, label)
 
         scores_lst = []
 
@@ -281,6 +301,8 @@ print "Done, "
 # generate train/test input.lst for training network
 _gen_source_( handle_c3d_trkrank['filename'], 'c3d_trkrank' )
 _gen_source_( handle_caffe_trkrank['filename'], 'caffe_trkrank')
+_gen_source_( handle_c3d_difficulty['filename'], 'c3d_difficulty')
+_gen_source_( handle_caffe_difficulty['filename'], 'caffe_difficulty')
 
 
 # travel through all attribute
