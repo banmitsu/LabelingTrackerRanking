@@ -232,7 +232,6 @@ handle_caffe_trkrank = _open_file_('trkrank', 'caffe')
 handle_c3d_difficulty = _open_file_('difficulty', 'c3d')
 handle_caffe_difficulty = _open_file_('difficulty', 'caffe')
 
-
 # Create labels for each video clips
 with open(nameto_lst_LABEL,'r') as f: # start2end.index
     for each_video in f:
@@ -278,10 +277,8 @@ with open(nameto_lst_LABEL,'r') as f: # start2end.index
                 scores_lst[ind] = 1
             else:
                 scores_lst[ind] = 0
-        sum_ = np.sum(scores_lst)
-        label_ = "{:0>1}".format(label_)
-        # _close_all_()
-        # sys.exit()
+        label_ = np.sum(scores_lst)
+        label = "{:0>1}".format(label_)
         _gen_label_(handle_c3d_difficulty, each_video, label)
         _gen_label_(handle_caffe_difficulty, each_video, label)
         # Classification #3 (by attribute)
@@ -304,6 +301,7 @@ _gen_source_( handle_caffe_trkrank['filename'], 'caffe_trkrank')
 _gen_source_( handle_c3d_difficulty['filename'], 'c3d_difficulty')
 _gen_source_( handle_caffe_difficulty['filename'], 'caffe_difficulty')
 
+# plot prior
 
 # travel through all attribute
 

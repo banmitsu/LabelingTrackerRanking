@@ -8,7 +8,7 @@ score_list_name = sys.argv[1]
 feat_dir = sys.argv[2]
 
 score_dict = {}
-feat_type = '.pool5'
+feat_type = '.fc7'
 
 print 'Read features from', feat_dir , 'with format:', feat_type
 print 'genderate score according to', score_list_name
