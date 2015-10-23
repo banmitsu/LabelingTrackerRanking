@@ -73,7 +73,7 @@ def service():
 
                         if not scores.size:
                             print tracker, ATTR, VIDEO, profile['f0'], "is failed"
-                            if CLUSTER_PROFILES[tracker][ATTR][3]['Name'] == "FAIL":
+                            if CLUSTER_PROFILES[tracker][ATTR][3]['Name'] == "FIAL":
                                 CLUSTER_PROFILES[tracker][ATTR][3]['Score'] += 1;
                             break
 
