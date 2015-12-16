@@ -31,7 +31,7 @@ def _convert_svm_format_(feat_list):
     return tmpS
 
 # traverse the dir and extract the feature name
-output_name = 'STR_svm_input'
+output_name = 'svm_input'
 output = open(output_name, 'w+')
 output_list = []
 
@@ -41,7 +41,7 @@ feature_list = 'input_16023.txt'
 feature_dir  = '/home/kv/research/C3D/examples/c3d_tr_feature_extraction/output/alov_feat/16023/'
 
 feat_type = 'fc6'
-tracker_type = 'STR'
+tracker_type = 'CSK'
 
 print 'Read features from', feature_dir , 'with format:', feat_type
 print 'genderate score according to', feature_list
@@ -67,7 +67,7 @@ if __name__ == '__main__':
             feature     = _upack_feature_(feat_name)
             svm_feature = _convert_svm_format_(feature)
             # Gen_svm
-            line = np.str_(score[0]) + ' ' + svm_feature + '\n'
+            line = np.str_(score) + ' ' + svm_feature + '\n'
             output_list.append(line)
             output.write(line)
             count = count +1
@@ -75,7 +75,8 @@ if __name__ == '__main__':
             pass
         #break
 
-print 'Done,', count, 'features saved in', output_name
+print 'Tracker: ', tracker_type
+print 'Done,', count, ' ', feat_type,' features saved in', output_name
 output.close()
 
 
